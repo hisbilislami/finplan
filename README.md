@@ -1,1 +1,1 @@
-# finplan
+# Financial Planning API
