@@ -46,4 +46,13 @@ export class UserService {
     const hash = bcrypt.hashSync(password, 10);
     return hash;
   }
+
+  findByEmail(email: string) {
+    return this.userRepository.findOne({ where: { email: email } });
+  }
+
+  verify(password: string, hash: string) {
+    const valid = bcrypt.compareSync(password, hash);
+    return valid;
+  }
 }

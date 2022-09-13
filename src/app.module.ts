@@ -9,6 +9,7 @@ import { UserModule } from './user/user.module';
 import { User } from './user/entities/user.entity';
 import { UniqueValidator } from './etc/validator/unique-validator';
 import { ValidId } from './etc/validator/valid-id';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { ValidId } from './etc/validator/valid-id';
     TransactionModule,
     DiffModule,
     UserModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [UniqueValidator, ValidId],

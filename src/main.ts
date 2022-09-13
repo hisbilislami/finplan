@@ -22,6 +22,7 @@ async function bootstrap() {
     .setTitle('Financial Planning v.0.1')
     .setDescription('Financial planning API testing tools.')
     .setVersion('1.0')
+    .addBearerAuth()
     .addTag('finplan')
     .build();
   const document = SwaggerModule.createDocument(app, config);
