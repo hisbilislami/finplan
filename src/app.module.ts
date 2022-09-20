@@ -10,6 +10,10 @@ import { User } from './user/entities/user.entity';
 import { UniqueValidator } from './etc/validator/unique-validator';
 import { ValidId } from './etc/validator/valid-id';
 import { AuthModule } from './auth/auth.module';
+import { Item } from './items/entities/item.entity';
+import { Planning } from './planning/entities/planning.entity';
+import { Diff } from './diff/entities/diff.entity';
+import { Transaction } from './transaction/entities/transaction.entity';
 
 @Module({
   imports: [
@@ -21,7 +25,7 @@ import { AuthModule } from './auth/auth.module';
       username: process.env.DB_USER,
       password: String(process.env.DB_PASSWORD),
       database: process.env.DB_NAME,
-      entities: [User],
+      entities: [User, Item, Planning, Diff, Transaction],
       synchronize: true,
     }),
     ItemsModule,
