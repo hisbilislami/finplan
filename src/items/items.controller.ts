@@ -1,9 +1,25 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  HttpStatus,
+  HttpCode,
+} from '@nestjs/common';
 import { ItemsService } from './items.service';
-import { CreateItemDto } from './dto/create-item.dto';
+import { CreateItemDto, ItemDtoId } from './dto/create-item.dto';
 import { UpdateItemDto } from './dto/update-item.dto';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { JwtGuard } from 'src/auth/jwt.guard';
 
+@ApiTags('Master Items')
 @Controller('items')
+@ApiBearerAuth()
+@UseGuards(JwtGuard)
 export class ItemsController {
   constructor(private readonly itemsService: ItemsService) {}
 
@@ -28,7 +44,8 @@ export class ItemsController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.itemsService.remove(+id);
+  @HttpCode(HttpStatus.NO_CONTENT)
+  remove(@Param() id: ItemDtoId) {
+    return this.itemsService.remove(+id.id);
   }
 }
