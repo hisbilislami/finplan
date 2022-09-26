@@ -1,26 +1,34 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateDiffDto } from './dto/create-diff.dto';
 import { UpdateDiffDto } from './dto/update-diff.dto';
+import { Diff } from './entities/diff.entity';
 
 @Injectable()
 export class DiffService {
+  constructor(
+    @InjectRepository(Diff)
+    private readonly diffRepository: Repository<Diff>,
+  ) {}
   create(createDiffDto: CreateDiffDto) {
-    return 'This action adds a new diff';
+    return this.diffRepository.save(createDiffDto);
   }
 
   findAll() {
-    return `This action returns all diff`;
+    return this.diffRepository.find();
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} diff`;
+    return this.diffRepository.findOneBy({ id: id });
   }
 
-  update(id: number, updateDiffDto: UpdateDiffDto) {
-    return `This action updates a #${id} diff`;
+  update(updateDiffDto: UpdateDiffDto) {
+    return this.diffRepository.save(updateDiffDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} diff`;
+  async remove(id: number) {
+    let diff = await this.diffRepository.findOneBy({ id: id });
+    return this.diffRepository.softRemove(diff);
   }
 }

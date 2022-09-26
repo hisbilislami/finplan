@@ -1,14 +1,34 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Patch,
+  Param,
+  Delete,
+  HttpCode,
+  HttpStatus,
+  UseGuards,
+} from '@nestjs/common';
 import { PlanningService } from './planning.service';
-import { CreatePlanningDto } from './dto/create-planning.dto';
+import { CreatePlanningDto, PlanningDtoId } from './dto/create-planning.dto';
 import { UpdatePlanningDto } from './dto/update-planning.dto';
+import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
+import { JwtGuard } from 'src/auth/jwt.guard';
+import {
+  AttachUserCreatedBy,
+  AttachUserUpdatedBy,
+} from 'src/etc/attach-user.decorator';
 
+@ApiTags('Planning')
+@ApiBearerAuth()
+@UseGuards(JwtGuard)
 @Controller('planning')
 export class PlanningController {
   constructor(private readonly planningService: PlanningService) {}
 
   @Post()
-  create(@Body() createPlanningDto: CreatePlanningDto) {
+  @ApiBody({ type: CreatePlanningDto })
+  create(@AttachUserCreatedBy() createPlanningDto: CreatePlanningDto) {
     return this.planningService.create(createPlanningDto);
   }
 
@@ -22,13 +42,15 @@ export class PlanningController {
     return this.planningService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePlanningDto: UpdatePlanningDto) {
-    return this.planningService.update(+id, updatePlanningDto);
+  @Patch()
+  @ApiBody({ type: UpdatePlanningDto })
+  update(@AttachUserUpdatedBy() updatePlanningDto: UpdatePlanningDto) {
+    return this.planningService.update(updatePlanningDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.planningService.remove(+id);
+  @HttpCode(HttpStatus.NO_CONTENT)
+  remove(@Param() id: PlanningDtoId) {
+    return this.planningService.remove(+id.id);
   }
 }

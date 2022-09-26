@@ -1,14 +1,35 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  HttpCode,
+  HttpStatus,
+} from '@nestjs/common';
+import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
+import { JwtGuard } from 'src/auth/jwt.guard';
+import {
+  AttachUserCreatedBy,
+  AttachUserUpdatedBy,
+} from 'src/etc/attach-user.decorator';
 import { DiffService } from './diff.service';
-import { CreateDiffDto } from './dto/create-diff.dto';
+import { CreateDiffDto, DiffDtoId } from './dto/create-diff.dto';
 import { UpdateDiffDto } from './dto/update-diff.dto';
 
+@ApiTags('Diff')
+@ApiBearerAuth()
 @Controller('diff')
+@UseGuards(JwtGuard)
 export class DiffController {
   constructor(private readonly diffService: DiffService) {}
 
   @Post()
-  create(@Body() createDiffDto: CreateDiffDto) {
+  @ApiBody({ type: CreateDiffDto })
+  create(@AttachUserCreatedBy() createDiffDto: CreateDiffDto) {
     return this.diffService.create(createDiffDto);
   }
 
@@ -22,13 +43,15 @@ export class DiffController {
     return this.diffService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateDiffDto: UpdateDiffDto) {
-    return this.diffService.update(+id, updateDiffDto);
+  @Patch()
+  @ApiBody({ type: UpdateDiffDto })
+  update(@AttachUserUpdatedBy() updateDiffDto: UpdateDiffDto) {
+    return this.diffService.update(updateDiffDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.diffService.remove(+id);
+  @HttpCode(HttpStatus.NO_CONTENT)
+  remove(@Param() id: DiffDtoId) {
+    return this.diffService.remove(+id.id);
   }
 }

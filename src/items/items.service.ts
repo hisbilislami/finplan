@@ -26,8 +26,7 @@ export class ItemsService {
     });
   }
 
-  update(id: number, updateItemDto: UpdateItemDto) {
-    updateItemDto.id = id;
+  update(updateItemDto: UpdateItemDto) {
     return this.itemRepository.save(updateItemDto);
   }
 

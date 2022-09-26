@@ -26,8 +26,7 @@ export class UserService {
     return this.userRepository.findOne({ where: { id: id } });
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    updateUserDto.id = id;
+  update(updateUserDto: UpdateUserDto) {
     if (updateUserDto.password) {
       updateUserDto.password = this.hashing(updateUserDto.password);
     }

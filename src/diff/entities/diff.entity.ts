@@ -29,6 +29,9 @@ export class Diff {
   @Column({ type: 'numeric' })
   balance: number;
 
+  @Column({ type: 'date' })
+  date: Date;
+
   @CreateDateColumn()
   created_at: Date;
 

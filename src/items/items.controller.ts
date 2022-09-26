@@ -13,8 +13,12 @@ import {
 import { ItemsService } from './items.service';
 import { CreateItemDto, ItemDtoId } from './dto/create-item.dto';
 import { UpdateItemDto } from './dto/update-item.dto';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 import { JwtGuard } from 'src/auth/jwt.guard';
+import {
+  AttachUserCreatedBy,
+  AttachUserUpdatedBy,
+} from 'src/etc/attach-user.decorator';
 
 @ApiTags('Master Items')
 @Controller('items')
@@ -24,7 +28,8 @@ export class ItemsController {
   constructor(private readonly itemsService: ItemsService) {}
 
   @Post()
-  create(@Body() createItemDto: CreateItemDto) {
+  @ApiBody({ type: CreateItemDto })
+  create(@AttachUserCreatedBy() createItemDto: CreateItemDto) {
     return this.itemsService.create(createItemDto);
   }
 
@@ -38,9 +43,10 @@ export class ItemsController {
     return this.itemsService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateItemDto: UpdateItemDto) {
-    return this.itemsService.update(+id, updateItemDto);
+  @Patch()
+  @ApiBody({ type: UpdateItemDto })
+  update(@AttachUserUpdatedBy() updateItemDto: UpdateItemDto) {
+    return this.itemsService.update(updateItemDto);
   }
 
   @Delete(':id')
