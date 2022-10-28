@@ -27,6 +27,12 @@ import { Transaction } from './transaction/entities/transaction.entity';
       database: process.env.DB_NAME,
       entities: [User, Item, Planning, Diff, Transaction],
       synchronize: true,
+      extra: {
+        ssl:
+          process.env.NODE_ENV !== 'development'
+            ? { rejectUnauthorized: false }
+            : false,
+      },
     }),
     ItemsModule,
     PlanningModule,
